@@ -35,7 +35,7 @@ of the Velero repository is under active development and is not guaranteed to be
 
 ## Create OSS bucket
 
-Velero requires an object storage bucket to store backups in, preferrably unique to a single Kubernetes cluster. Create an OSS bucket, replacing placeholders appropriately:
+Velero requires an object storage bucket to store backups in, preferably unique to a single Kubernetes cluster. Create an OSS bucket, replacing placeholders appropriately:
 
 ```bash
 BUCKET=<YOUR_BUCKET>
@@ -139,6 +139,15 @@ For more information, see [the AlibabaCloud documentation on RAM users guides][1
 	kubectl delete crds -l component=velero
 	```
 	
+## For migrating to alibabacloud ACK (optional)
+
+The steps to install/uninstall migration enhanced velero and velero-plugin for alibabacloud are almost the same as above, but what you need is `02-velero-migrate.yaml` rather than `01-velero.yaml`. And before you "Create and run velero and velero-plugin for alibabacloud":
+
+1. Create a configmap to configure the transformation of object in migration 
+
+	`kubectl create configmap transform-config --namespace velero --from-file=install/transform-config.json`
+
+
 ## Installing the nginx example (optional)
 
 1. nginx example without persistent volumes

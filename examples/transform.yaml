@@ -1,0 +1,223 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-example
+  labels:
+    app: nginx
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: disk-test
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: io1
+  iopsPerGB: "10"
+  fsType: ext4
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nas-nfs-test
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: io1
+  iopsPerGB: "10"
+  fsType: ext4
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nas-flexvolume-test
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: io1
+  iopsPerGB: "10"
+  fsType: ext4
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: disk-pv-test
+ namespace: nginx-example
+spec:
+ storageClassName: local
+ capacity:
+   storage: 20Gi
+ accessModes:
+   - ReadWriteOnce
+ hostPath:
+   path: "/mnt/disk"
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: nas-pv-test
+ namespace: nginx-example
+spec:
+ storageClassName: local
+ capacity:
+   storage: 5Gi
+ accessModes:
+   - ReadWriteOnce
+ hostPath:
+   path: "/mnt/nas"
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+ name: oss-pv-test
+ namespace: nginx-example
+spec:
+ storageClassName: local
+ capacity:
+   storage: 5Gi
+ accessModes:
+   - ReadWriteOnce
+ hostPath:
+   path: "/mnt/oss"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: disk-pv-test
+  namespace: nginx-example
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: local
+  volumeName: disk-pv-test
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nas-pv-test
+  namespace: nginx-example
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: local
+  volumeName: nas-pv-test
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: oss-pv-test
+  namespace: nginx-example
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: local
+  volumeName: oss-pv-test
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nas-nfs-test
+  namespace: nginx-example
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: nas-nfs-test
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nas-flexvolume-test
+  namespace: nginx-example
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: nas-flexvolume-test
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: disk-test
+  namespace: nginx-example
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: disk-test
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-sc-test
+  namespace: nginx-example
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx:1.7.9
+        name: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: "/var/disk-test"
+            name: disk-test
+          - mountPath: "/var/nas-nfs-test"
+            name: nas-nfs-test
+          - mountPath: "/var/nas-flexvolume-test"
+            name: nas-flexvolume-test
+          - mountPath: "/var/disk-pv-test"
+            name: disk-pv-test
+          - mountPath: "/var/nas-pv-test"
+            name: nas-pv-test
+          - mountPath: "/var/oss-pv-test"
+            name: oss-pv-test
+      volumes:
+        - name: disk-test
+          persistentVolumeClaim:
+           claimName: disk-test
+        - name: nas-nfs-test
+          persistentVolumeClaim:
+           claimName: nas-nfs-test
+        - name: nas-flexvolume-test
+          persistentVolumeClaim:
+           claimName: nas-flexvolume-test
+        - name: disk-pv-test
+          persistentVolumeClaim:
+           claimName: disk-pv-test
+        - name: nas-pv-test
+          persistentVolumeClaim:
+           claimName: nas-pv-test
+        - name: oss-pv-test
+          persistentVolumeClaim:
+           claimName: oss-pv-test

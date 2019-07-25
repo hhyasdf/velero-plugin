@@ -1,0 +1,50 @@
+{
+    "ImageSources": {
+        "<OLD_IMAGE_SOURCE>" : "<NEW_IMAGE_SOURCE>"
+    },
+    "PersistentVolume": {
+        "<OSS_PERSISTENT_VOLUME_NAME>": {
+            "transform_to": "OSS",
+            "bucket": "***",
+            "url": "oss-cn-beijing.aliyuncs.com",
+            "akId": "***",
+            "akSecret": "***",
+            "otherOpts": ""
+        },
+        "<DISK_PERSISTENT_VOLUME_NAME>": {
+            "transform_to": "DISK",
+            "region": "cn-beijing",
+            "zone": "cn-beijing-a",
+            "fsType": "ext4",
+            "volumeId": "***"
+        },
+        "<NAS_PERSISTENT_VOLUME_NAME>": {
+            "transform_to": "NAS",
+            "server": "***",
+            "path": "/",
+            "vers": "4.0"
+        }
+    },
+    "StorageClass": {
+        "<DISK_STORAGE_CLASS_NAME>": {
+            "alibaba_ACK_provisioner": "DISK",
+            "type": "cloud",
+            "region": "cn-beijing",
+            "zone": "cn-beijing-a",
+            "fstype": "ext4",
+            "readonly": "false",
+            "encrypted": "false"
+        },
+        "<NAS_NFS_STORAGE_CLASS_NAME>": {
+            "alibaba_ACK_provisioner": "NAS",
+            "drivertype": "nfs",
+            "mountOptions": "vers=4.0,noresvport"
+        },
+        "<NAS_NFS_STORAGE_CLASS_NAME>": {
+            "alibaba_ACK_provisioner": "NAS",
+            "drivertype": "flexvolume",
+            "nfsversion": "4.0",
+            "options": ""
+        }
+    }
+}
