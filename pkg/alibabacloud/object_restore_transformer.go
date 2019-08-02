@@ -374,6 +374,9 @@ func ImageTransform(sourceMap interface{}, image interface{}) (interface{}, erro
 	newImageString := imageString
 	for old, new := range imageSourceMap {
 		newImageString = strings.Replace(newImageString, old, new, 1)
+		if newImageString != imageString {
+			break
+		}
 	}
 
 	return newImageString, nil
